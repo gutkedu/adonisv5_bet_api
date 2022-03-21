@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /usr/app_bet_api
+WORKDIR /usr/app
 
 COPY package.json ./
 

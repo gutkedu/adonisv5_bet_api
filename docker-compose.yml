@@ -21,7 +21,7 @@ services:
       - 3333:3333
       - 9229:9229 #debug
     volumes:
-      - .:/usr/app_bet_api
+      - .:/usr/app
     links:
       - database
     depends_on:
