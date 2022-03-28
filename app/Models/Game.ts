@@ -19,7 +19,7 @@ export default class Game extends BaseModel {
   public price: number
 
   @column()
-  public maxNumber: number
+  public max_number: number
 
   @column()
   public color: string

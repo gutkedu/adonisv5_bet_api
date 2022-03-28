@@ -10,7 +10,7 @@ export default class Games extends BaseSchema {
       table.string('description').notNullable()
       table.integer('range').unsigned().notNullable()
       table.integer('price').unsigned().notNullable()
-      table.integer('maxNumber').unsigned().notNullable()
+      table.integer('max_number').unsigned().notNullable()
       table.string('color').notNullable()
       table.timestamp('updated_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
