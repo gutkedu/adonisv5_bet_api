@@ -4,7 +4,6 @@ import Game from 'App/Models/Game';
 export default class GameSeeder extends BaseSeeder {
   public async run() {
     const uniqueKey = 'type';
-
     Game.updateOrCreateMany(uniqueKey, [
       {
         "type": "Lotofácil",
