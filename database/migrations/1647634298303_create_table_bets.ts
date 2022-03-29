@@ -5,7 +5,7 @@ export default class Bets extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary()
+      table.increments('id').primary()
       table.uuid('user_id').references('users.id')
       table.uuid('game_id').references('games.id')
       table.unique(['user_id', 'game_id'])

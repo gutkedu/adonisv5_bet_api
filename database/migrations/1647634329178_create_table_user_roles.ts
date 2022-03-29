@@ -5,7 +5,7 @@ export default class UserRoles extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary()
+      table.increments('id').primary()
       table.uuid('user_id').references('users.id')
       table.uuid('role_id').references('roles.id')
       table.unique(['user_id', 'role_id'])
