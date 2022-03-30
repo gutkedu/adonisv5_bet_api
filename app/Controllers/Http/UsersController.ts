@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import mailConfig from 'Config/mail';
 import User from 'App/Models/User';
 
 export default class UsersController {
@@ -9,19 +10,45 @@ export default class UsersController {
 
   public async store({ request, response }: HttpContextContract) {
     const { name, email, password } = request.body();
-    const searchPayload = { email: email }
-    const savePayload = {
-      name: name,
-      password: password,
+
+    const user = await User.findBy('email', email)
+
+    if (!user) {
+      const new_user = await User.create({
+        name: name,
+        email: email,
+        password: password
+      })
+
+      const message = {
+        from: "noreplay@luby.software.com",
+        to: "eduardo@luby.software.com",
+        subject: 'Cadastro finalizado na plataforma de apostas.',
+        text: `Prezado(a) ${new_user.name}. \n\nO seu cadastro foi finalizado.\n\n`,
+        html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi finalizado. <br><br>`
+      }
+
+      mailConfig.sendMail(message, (err) => {
+        if (err) {
+          return response.status(400)
+        }
+      })
+      return response.status(201).send(`Usuario com e-mail ${new_user.email} criado!`)
     }
-    await User.firstOrCreate(searchPayload, savePayload)
-    return response.status(201);
+
+    else {
+      return response.status(200).send(`Usuario com e-mail ${user.email} ja existe`)
+    }
   }
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params();
     const user = await User.findOrFail(id)
-    return response.status(200).send(user)
+    const bets = await user
+      .related('games')
+      .query()
+
+    return { user, bets }
   }
 
   public async update({ request, response }: HttpContextContract) {
