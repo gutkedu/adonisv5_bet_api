@@ -9,4 +9,4 @@ Route.get('/', async () => {
   return { hello: 'World from Docker' }
 })
 
-
+Route.post('/login', 'AuthController.login')
