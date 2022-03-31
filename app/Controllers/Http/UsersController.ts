@@ -1,6 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import mailConfig from 'Config/mail';
 import User from 'App/Models/User';
+import CreateUserValidator from 'App/Validators/CreateUserValidator';
+import UpdateUserValidator from 'App/Validators/UpdateUserValidator';
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
@@ -9,8 +11,9 @@ export default class UsersController {
   }
 
   public async store({ request, response }: HttpContextContract) {
-    const { name, email, password } = request.body();
+    const payload = await request.validate(CreateUserValidator)
 
+    const { name, email, password } = request.body();
     const user = await User.findBy('email', email)
 
     if (!user) {
@@ -43,7 +46,7 @@ export default class UsersController {
     }
   }
 
-  public async show({ request, response }: HttpContextContract) {
+  public async show({ request }: HttpContextContract) {
     const { id } = request.params();
     const user = await User.findOrFail(id)
     const bets = await user
@@ -54,8 +57,8 @@ export default class UsersController {
   }
 
   public async update({ request, response }: HttpContextContract) {
-    const { id } = request.params();
-    const { name, email } = request.body();
+    const payload = await request.validate(UpdateUserValidator)
+    const { id, name, email } = request.body();
     const user = await User.findOrFail(id);
     await user
       .merge({

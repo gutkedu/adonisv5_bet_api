@@ -4,7 +4,7 @@ import mailConfig from 'Config/mail'
 import { v4 as uuidv4 } from 'uuid';
 
 export default class ForgotPasswordController {
-  public async store({ auth, request, response }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const email = request.input('email');
     const user = await User.findByOrFail('email', email);
 

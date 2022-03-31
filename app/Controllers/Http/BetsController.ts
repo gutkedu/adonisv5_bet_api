@@ -1,9 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Game from 'App/Models/Game';
 import User from 'App/Models/User';
+import CreateBetValidator from 'App/Validators/CreateBetValidator';
 
 export default class BetsController {
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(CreateBetValidator)
     const { user_id, gameType, bet_numbers } = request.body();
     const user = await User.findOrFail(user_id);
     const game = await Game.findByOrFail('type', gameType);

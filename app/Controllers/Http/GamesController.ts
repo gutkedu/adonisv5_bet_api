@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Game from 'App/Models/Game'
+import CreateGameValidator from 'App/Validators/CreateGameValidator';
 
 export default class GamesController {
   public async index({ response }: HttpContextContract) {
@@ -8,6 +9,7 @@ export default class GamesController {
   }
 
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(CreateGameValidator);
     const {
       type,
       description,
@@ -23,8 +25,8 @@ export default class GamesController {
       max_number: max_number,
       color: color
     }
-    await Game.firstOrCreate(searchPayload, savePayload)
-    return response.status(201);
+    const game = await Game.firstOrCreate(searchPayload, savePayload)
+    return response.status(201).send(`Jogo ${game.type} criado!`);
   }
 
   public async show({ request, response }: HttpContextContract) {
