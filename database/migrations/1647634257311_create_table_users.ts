@@ -9,6 +9,7 @@ export default class Users extends BaseSchema {
       table.string('name').notNullable()
       table.string('email').unique().notNullable()
       table.string('password').notNullable()
+      table.string('remember_me_token')
       table.timestamp('updated_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
     })
