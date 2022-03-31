@@ -22,13 +22,15 @@ export default class UsersController {
 
       const message = {
         from: "noreplay@luby.software.com",
-        to: "eduardo@luby.software.com",
+        to: `${new_user.email}`,
         subject: 'Cadastro finalizado na plataforma de apostas.',
-        text: `Prezado(a) ${new_user.name}. \n\nO seu cadastro foi finalizado.\n\n`,
-        html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi finalizado. <br><br>`
+        text: `Prezado(a) ${new_user.name}. \n\nO seu cadastro foi
+        finalizado.\n\n`,
+        html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi
+        finalizado. <br><br>`
       }
 
-      mailConfig.sendMail(message, (err) => {
+      await mailConfig.sendMail(message, (err) => {
         if (err) {
           return response.status(400)
         }
