@@ -50,8 +50,8 @@ export default class User extends BaseModel {
   public roles: ManyToMany<typeof Role>
 
   @manyToMany(() => Game, {
+    serializeAs: 'user_games',
     pivotTable: 'bets',
-    pivotColumns: ['bet_numbers'],
     pivotTimestamps: true
   })
   public games: ManyToMany<typeof Game>

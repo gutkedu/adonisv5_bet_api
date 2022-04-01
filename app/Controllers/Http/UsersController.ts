@@ -3,6 +3,7 @@ import mailConfig from 'Config/mail';
 import User from 'App/Models/User';
 import CreateUserValidator from 'App/Validators/CreateUserValidator';
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator';
+import Bet from 'App/Models/Bet';
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
@@ -47,11 +48,12 @@ export default class UsersController {
 
   public async show({ request }: HttpContextContract) {
     const { id } = request.params();
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - 1)
     const user = await User.findOrFail(id)
-    const bets = await user
-      .related('games')
+    const bets = await Bet
       .query()
-
+      .where('user_id', id)
     return { user, bets }
   }
 
