@@ -37,6 +37,7 @@ export default class GamesController {
 
   public async update({ request, response }: HttpContextContract) {
     const { id } = request.params();
+    await request.validate(CreateGameValidator);
     const {
       type,
       description,

@@ -2,9 +2,17 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User';
 import mailConfig from 'Config/mail'
 import { v4 as uuidv4 } from 'uuid';
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class ForgotPasswordController {
   public async store({ request, response }: HttpContextContract) {
+    await request.validate({
+      schema: schema.create({
+        email: schema.string({}, [
+          rules.email()
+        ])
+      })
+    })
     const email = request.input('email');
     const user = await User.findByOrFail('email', email);
 

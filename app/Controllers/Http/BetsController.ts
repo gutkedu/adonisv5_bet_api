@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Game from 'App/Models/Game';
 import User from 'App/Models/User';
 import CreateBetValidator from 'App/Validators/CreateBetValidator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class BetsController {
   public async store({ request, response }: HttpContextContract) {
@@ -19,6 +20,14 @@ export default class BetsController {
   }
 
   public async destroy({ request, response }: HttpContextContract) {
+    await request.validate({
+      schema: schema.create({
+        user_id: schema.string({}, [
+          rules.uuid()
+        ]),
+        gameType: schema.string({})
+      })
+    })
     const { user_id, gameType } = request.body();
     const user = await User.findOrFail(user_id);
     const game = await Game.findByOrFail('type', gameType);

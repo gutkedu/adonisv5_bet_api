@@ -11,8 +11,7 @@ export default class UsersController {
   }
 
   public async store({ request, response }: HttpContextContract) {
-    const payload = await request.validate(CreateUserValidator)
-
+    await request.validate(CreateUserValidator)
     const { name, email, password } = request.body();
     const user = await User.findBy('email', email)
 
@@ -57,7 +56,7 @@ export default class UsersController {
   }
 
   public async update({ request, response }: HttpContextContract) {
-    const payload = await request.validate(UpdateUserValidator)
+    await request.validate(UpdateUserValidator)
     const { id, name, email } = request.body();
     const user = await User.findOrFail(id);
     await user
