@@ -1,9 +1,9 @@
 import Route from '@ioc:Adonis/Core/Route'
-import 'App/modules/User/user_routes'
-import 'App/modules/Game/game_routes'
-import 'App/modules/Role/role_routes'
-import 'App/modules/UserRoles/user_roles_routes'
-import 'App/modules/Bet/bet_routes'
+import 'App/Routes/user_routes'
+import 'App/Routes/game_routes'
+import 'App/Routes/role_routes'
+import 'App/Routes/user_roles_routes'
+import 'App/Routes/bet_routes'
 
 Route.get('/', async () => {
   return { hello: 'World from Docker' }
