@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Role from 'App/Models/Role'
+import CreateRoleValidator from 'App/Validators/CreateRoleValidator';
 
 export default class RolesController {
   public async index({ response }: HttpContextContract) {
@@ -8,6 +9,7 @@ export default class RolesController {
   }
 
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(CreateRoleValidator)
     const { privilege, description } = request.body();
     const searchPayload = { privilege: privilege }
     const savePayload = {
