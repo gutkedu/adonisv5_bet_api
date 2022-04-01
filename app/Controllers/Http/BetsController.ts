@@ -3,6 +3,7 @@ import Game from 'App/Models/Game';
 import User from 'App/Models/User';
 import CreateBetValidator from 'App/Validators/CreateBetValidator';
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import mailConfig from 'Config/mail';
 
 export default class BetsController {
   public async store({ request, response }: HttpContextContract) {
@@ -16,6 +17,23 @@ export default class BetsController {
         bet_numbers: bet_numbers
       }
     })
+
+    const message = {
+      from: "noreplay@luby.software.com",
+      to: `${user.email}`,
+      subject: 'Aposta relizada na Bet API.',
+      text: `Prezado(a) ${user.name}. \n\nA sua aposta para o Jogo
+      ${game.type} foi finalizada, com os numeros: ${bet_numbers}.\n\n`,
+      html: `Prezado(a) ${user.name}. <br><br> A sua aposta para o Jogo
+      ${game.type} foi finalizada, com os numeros: ${bet_numbers}. <br><br>`
+    }
+
+    await mailConfig.sendMail(message, (err) => {
+      if (err) {
+        return response.status(400)
+      }
+    })
+
     return response.status(201).send(`Aposta do jogo ${gameType} criada!`)
   }
 
