@@ -19,7 +19,7 @@ export default class AuthMiddleware {
       'Unauthorized access',
       'E_UNAUTHORIZED_ACCESS',
       guardLastAttempted,
-      this.redirectTo,
+      this.redirectTo
     )
   }
   public async handle(

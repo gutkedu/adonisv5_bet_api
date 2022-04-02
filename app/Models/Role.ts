@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Role extends BaseModel {
   @column({ isPrimary: true })
@@ -17,8 +17,6 @@ export default class Role extends BaseModel {
 
   @beforeCreate()
   public static assignUuid(role: Role) {
-    role.id = uuidv4();
+    role.id = uuidv4()
   }
-
-  
 }

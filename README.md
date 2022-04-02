@@ -3,6 +3,7 @@
 O último teste do módulo de Adonis JS consiste em criar uma API para armazenar apostas e jogos de sorte.
 
 Para concluir o teste, deve-se usar todo o conhecimento adquirido no curso Adonis JS e Docker
+
 ## Requisitos Não Funcionais
 
      RNF01. Construir toda aplicação utilizando Adonis V5
@@ -32,5 +33,6 @@ Para concluir o teste, deve-se usar todo o conhecimento adquirido no curso Adoni
      RF08: Ao buscar um usuário, é necessário trazer todas as apostas dele no último mês
 
 # Atenção: Antes de iniciar a prova, envie o DIAGRAMA DE BANCO DE DADOS para o seu líder.
- Observação: caso não tenha conhecimento sobre diagramas, você pode estar entendendo através deste [Vídeo](https://www.youtube.com/watch?v=XCkd27GtZoM) 
- Observação: deve-se construir uma collection no insomnia para ser compartilhado.
+
+Observação: caso não tenha conhecimento sobre diagramas, você pode estar entendendo através deste [Vídeo](https://www.youtube.com/watch?v=XCkd27GtZoM)
+Observação: deve-se construir uma collection no insomnia para ser compartilhado.

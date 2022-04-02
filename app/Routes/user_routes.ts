@@ -4,6 +4,8 @@ Route.group(() => {
   Route.resource('/users', 'UsersController')
     .apiOnly()
     .middleware({
-      show: ['admin']
+      show: ['admin'],
+      destroy: ['admin'],
+      update: ['admin'],
     })
 })
