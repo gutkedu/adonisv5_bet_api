@@ -8,9 +8,7 @@ export default class UserRoleValidator {
     user_id: schema.string({}, [
       rules.uuid()
     ]),
-    role_id: schema.string({}, [
-      rules.uuid()
-    ])
+    privilege: schema.string({})
   })
 
   public messages = {}
