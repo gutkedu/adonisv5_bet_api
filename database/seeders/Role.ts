@@ -8,13 +8,12 @@ export default class RoleSeeder extends BaseSeeder {
     await Role.updateOrCreateMany(uniqueKey, [
       {
         privilege: 'Player',
-        description: 'Jogador'
+        description: 'Jogador',
       },
       {
         privilege: 'Admin',
-        description: 'Privilegio de administrador'
-      }
+        description: 'Privilegio de administrador',
+      },
     ])
   }
 }
-

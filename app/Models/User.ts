@@ -1,10 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, beforeSave, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import { v4 as uuidv4 } from 'uuid';
+import {
+  BaseModel,
+  beforeCreate,
+  beforeSave,
+  column,
+  ManyToMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
+import { v4 as uuidv4 } from 'uuid'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Game from './Game';
-import Role from './Role';
-
+import Game from './Game'
+import Role from './Role'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -30,7 +36,7 @@ export default class User extends BaseModel {
 
   @beforeCreate()
   public static assignUUid(user: User) {
-    user.id = uuidv4();
+    user.id = uuidv4()
   }
 
   @beforeSave()
@@ -44,16 +50,15 @@ export default class User extends BaseModel {
     pivotTable: 'user_roles',
     pivotTimestamps: {
       createdAt: true,
-      updatedAt: false
-    }
+      updatedAt: false,
+    },
   })
   public roles: ManyToMany<typeof Role>
 
   @manyToMany(() => Game, {
     serializeAs: 'user_games',
     pivotTable: 'bets',
-    pivotTimestamps: true
+    pivotTimestamps: true,
   })
   public games: ManyToMany<typeof Game>
-
 }
