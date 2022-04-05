@@ -27,7 +27,7 @@
     "@adonisjs/core": "^5.5.3",
     "@adonisjs/lucid": "^17.1.0",
     "@adonisjs/repl": "^3.1.9",
-    "cron": "^1.8.2",
+    "adonis5-scheduler": "^2.0.2",
     "luxon": "^2.3.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.7.3",
