@@ -9,7 +9,6 @@ export default class Admin {
     const user_roles = await user.related('roles').query()
     user_roles.forEach((item) => {
       if (item.privilege === ('Admin' || 'admin')) {
-        console.log(item.privilege)
         isAdmin = true
       }
     })

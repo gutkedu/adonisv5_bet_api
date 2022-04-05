@@ -8,7 +8,6 @@ export default class Bets extends BaseSchema {
       table.increments('id').primary()
       table.uuid('user_id').references('users.id').onDelete('CASCADE')
       table.uuid('game_id').references('games.id').onDelete('CASCADE')
-      table.unique(['user_id', 'game_id'])
       table.string('bet_numbers').notNullable()
       table.timestamp('updated_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())

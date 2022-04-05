@@ -5,7 +5,7 @@ import CreateGameValidator from 'App/Validators/CreateGameValidator'
 export default class GamesController {
   public async index({ response }: HttpContextContract) {
     const games = await Game.all()
-    return response.status(200).send(games)
+    return  response.status(200).send({ min_cart_value: 30, games })
   }
 
   public async store({ request, response }: HttpContextContract) {
