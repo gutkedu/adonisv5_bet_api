@@ -4,11 +4,12 @@ import User from 'App/Models/User'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 import Bet from 'App/Models/Bet'
+import Role from 'App/Models/Role'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
     const user = await User.all()
-    return response.status(200).send(user)
+    return response.status(200).json(user)
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -23,6 +24,9 @@ export default class UsersController {
         password: password,
       })
 
+      const role = await Role.findByOrFail('privilege', 'Player')
+      await new_user.related('roles').attach([role.id])
+
       const message = {
         from: 'noreplay@luby.software.com',
         to: `${new_user.email}`,
@@ -32,13 +36,13 @@ export default class UsersController {
         html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi
         finalizado. <br><br>`,
       }
-
+      
       await mailConfig.sendMail(message, (err) => {
         if (err) {
           return response.status(400)
         }
       })
-      return response.status(201).json({ user })
+      return response.status(201).json(new_user)
     } else {
       return response.status(409).json({ message: `Usuario com e-mail ${user.email} ja existe` })
     }
@@ -58,12 +62,13 @@ export default class UsersController {
       else
         return;
     })
-    return response.status(200).send({ user, lastMonthBets })
+    return response.status(200).json({ user, lastMonthBets })
   }
 
   public async update({ request, response }: HttpContextContract) {
     await request.validate(UpdateUserValidator)
-    const { id, name, email } = request.body()
+    const { id } = request.params()
+    const { name, email } = request.body()
     const user = await User.findOrFail(id)
     await user
       .merge({
@@ -71,13 +76,13 @@ export default class UsersController {
         email: email,
       })
       .save()
-    return response.status(200).send(user)
+    return response.status(200).json(user)
   }
 
   public async destroy({ request, response }: HttpContextContract) {
-    const { user_id } = request.body()
-    const user = await User.findByOrFail('id', user_id)
+    const { id } = request.params()
+    const user = await User.findByOrFail('id', id)
     await user.delete()
-    return response.status(202).send(user)
+    return response.status(204)
   }
 }

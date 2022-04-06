@@ -3,7 +3,7 @@ import User from 'App/Models/User'
 
 export default class Admin {
   public async handle({ auth, response }: HttpContextContract, next: () => Promise<void>) {
-    const logged_user = auth.user;
+    const logged_user: any = auth.user;
     let isAdmin!: boolean
     try {
       const user = await User.findByOrFail('id', logged_user.id)
