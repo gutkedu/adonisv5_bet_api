@@ -44,13 +44,21 @@ export default class UsersController {
     }
   }
 
-  public async show({ request }: HttpContextContract) {
+  public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
     const currentDate = new Date()
-    currentDate.setMonth(currentDate.getMonth() - 1)
-    const user = await User.findOrFail(id)
-    const bets = await Bet.query().where('user_id', id)
-    return { user, bets }
+    let lastMonthBets: any = [];
+    const lastMonth = currentDate.getMonth();
+    const user = await User.findByOrFail('id', id)
+    const bets = await Bet.query().where('user_id', user.id)
+    bets.forEach((item) => {
+      if (item.createdAt.month === lastMonth) {
+        lastMonthBets.push(item);
+      }
+      else
+        return;
+    })
+    return response.status(200).send({ user, lastMonthBets })
   }
 
   public async update({ request, response }: HttpContextContract) {
