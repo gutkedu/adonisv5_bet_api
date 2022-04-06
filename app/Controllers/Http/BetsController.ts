@@ -2,10 +2,16 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Game from 'App/Models/Game'
 import User from 'App/Models/User'
 import CreateBetValidator from 'App/Validators/CreateBetValidator'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
 import mailConfig from 'Config/mail'
+import Bet from 'App/Models/Bet'
 
 export default class BetsController {
+  public async index({ response }: HttpContextContract) {
+    const Bets = await Bet.all();
+    return response.status(200).send({ allBets: Bets })
+  }
+
   public async store({ request, response }: HttpContextContract) {
     await request.validate(CreateBetValidator)
     const { user_id, user_bets } = request.body()
@@ -42,17 +48,32 @@ export default class BetsController {
     return response.status(201).send(`Aposta criada!`)
   }
 
-  public async destroy({ request, response }: HttpContextContract) {
+  public async show({ request, response }: HttpContextContract) {
+    const { id } = request.params();
+    const user = await User.findOrFail(id)
+    const bets = await Bet
+      .query()
+      .where('user_id', user.id)
+    return response.status(200).send({ userBets: bets })
+  }
+
+  public async update({ request, response }: HttpContextContract) {
+    const { id } = request.params();
     await request.validate({
       schema: schema.create({
-        user_id: schema.string({}, [rules.uuid()]),
-        gameType: schema.string({}),
+        bet_numbers: schema.string({})
       }),
     })
-    const { user_id, gameType } = request.body()
-    const user = await User.findOrFail(user_id)
-    const game = await Game.findByOrFail('type', gameType)
-    await user.related('games').detach([game.id])
-    return response.status(200).send(`Aposta do jogo ${gameType} deletada`)
+    const { bet_numbers } = request.body();
+    const bet = await Bet.findByOrFail('id', id)
+    await bet.merge({ bet_numbers: bet_numbers }).save()
+    return response.status(200).send({ bet })
+  }
+
+  public async destroy({ request, response }: HttpContextContract) {
+    const { id } = request.params();
+    const bet = await Bet.findByOrFail('id', id)
+    await bet.delete()
+    return response.status(200).send(`Aposta com id ${id} deletada`)
   }
 }
