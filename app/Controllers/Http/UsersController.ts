@@ -49,8 +49,8 @@ export default class UsersController {
     const currentDate = new Date()
     let lastMonthBets: any = [];
     const lastMonth = currentDate.getMonth();
-    const user = await User.findOrFail(id)
-    const bets = await Bet.query().where('user_id', id)
+    const user = await User.findByOrFail('id', id)
+    const bets = await Bet.query().where('user_id', user.id)
     bets.forEach((item) => {
       if (item.createdAt.month === lastMonth) {
         lastMonthBets.push(item);
