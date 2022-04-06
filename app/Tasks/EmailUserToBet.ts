@@ -35,9 +35,9 @@ export default class EmailUserToBet extends BaseTask {
         to: `${user.email}`,
         subject: 'Realize sua aposta na Bet Api',
         text: `Prezado(a) ${user.name}. \n\n Você não ordenou nenhuma aposta
-        em uma semana.\n\n`,
+        em uma semana. Venha apostar conosco novamente!\n\n`,
         html: `Prezado(a) ${user.name}. <br><br> Você não ordenou nenhuma aposta
-        em uma semana.<br><br>`,
+        em uma semana. Venha apostar conosco novamente!<br><br>`,
       }
       if (sendMail === true) {
         await mailConfig.sendMail(message, () => {
