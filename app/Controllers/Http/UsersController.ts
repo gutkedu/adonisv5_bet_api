@@ -38,9 +38,9 @@ export default class UsersController {
           return response.status(400)
         }
       })
-      return response.status(201).send(`Usuario com e-mail ${new_user.email} criado!`)
+      return response.status(201).json({ user })
     } else {
-      return response.status(200).send(`Usuario com e-mail ${user.email} ja existe`)
+      return response.status(409).json({ message: `Usuario com e-mail ${user.email} ja existe` })
     }
   }
 
