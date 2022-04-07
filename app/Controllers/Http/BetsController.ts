@@ -14,38 +14,46 @@ export default class BetsController {
 
   public async store({ request, response }: HttpContextContract) {
     await request.validate(CreateBetValidator)
-    const { user_id, user_bets } = request.body()
+    const { user_id, min_cart_value, user_bets } = request.body()
     const user = await User.findOrFail(user_id)
-    const games_arr: any = [];
-    const betsNum_arr: any = [];
+    let cumulative_betPrice: number = 0;
 
-    user_bets.forEach(async (bet) => {
-      games_arr.push(bet.gameType);
-      betsNum_arr.push(bet.bet_numbers);
-      const game = await Game.findByOrFail('type', bet.gameType)
-      await user.related('games').attach({
-        [game?.id]: {
-          bet_numbers: bet.bet_numbers,
-        }
-      })
-    })
-
-    const message = {
-      from: 'noreplay@luby.software.com',
-      to: `${user.email}`,
-      subject: 'Aposta relizada na Bet API.',
-      text: `Prezado(a) ${user.name}. \n\nA sua aposta para o Jogos
-      foi finalizada com os seguintes jogos e numeros: ${betsNum_arr} \n\n`,
-      html: `Prezado(a) ${user.name}. <br><br> A sua aposta para o Jogo
-      ${games_arr} foi finalizada, com os numeros: ${betsNum_arr} . <br><br>`,
+    for (const bet of user_bets) {
+      const game = await Game.findOrFail(bet.game_id)
+      cumulative_betPrice += game.price;
     }
 
-    await mailConfig.sendMail(message, (err) => {
-      if (err) {
-        return response.status(400)
+    if (cumulative_betPrice >= min_cart_value) {
+      for (const bet of user_bets) {
+        const game = await Game.findOrFail(bet.game_id)
+        await user.related('games').attach({
+          [game?.id]: {
+            bet_numbers: bet.bet_numbers,
+          }
+        })
       }
-    })
-    return response.status(201).send(`Aposta criada!`)
+
+      const message = {
+        from: 'noreplay@luby.software.com',
+        to: `${user.email}`,
+        subject: 'Aposta relizada na Bet API.',
+        text: `Prezado(a) ${user.name}. \n\nA sua aposta foi finalizada,
+        confira no site para informações mais detalhadas. \n\n`,
+        html: `Prezado(a) ${user.name}. <br><br> A sua aposta foi finalizada,
+        confira no site para informações mais detalhadas. <br><br>`,
+      }
+      await mailConfig.sendMail(message, (err) => {
+        if (err) {
+          return response.status(400)
+        }
+      })
+      return response.status(201).send({ user: user, total_price: cumulative_betPrice, bets: user_bets })
+    }
+    else {
+      return response.badRequest({
+        error: `O valor total da aposta foi de R$${cumulative_betPrice}, menor que o minimo de R$${min_cart_value}.`
+      })
+    }
   }
 
   public async show({ request, response }: HttpContextContract) {
