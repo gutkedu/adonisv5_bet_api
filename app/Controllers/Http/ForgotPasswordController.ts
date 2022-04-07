@@ -38,5 +38,6 @@ export default class ForgotPasswordController {
         return response.status(400)
       }
     })
+    return response.status(204)
   }
 }

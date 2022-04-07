@@ -36,7 +36,7 @@ export default class UsersController {
         html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi
         finalizado. <br><br>`,
       }
-      
+
       await mailConfig.sendMail(message, (err) => {
         if (err) {
           return response.status(400)
@@ -83,6 +83,6 @@ export default class UsersController {
     const { id } = request.params()
     const user = await User.findByOrFail('id', id)
     await user.delete()
-    return response.status(204)
+    return response.status(200).json({ deleted_user: user })
   }
 }

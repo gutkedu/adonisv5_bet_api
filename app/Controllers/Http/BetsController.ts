@@ -9,7 +9,7 @@ import Bet from 'App/Models/Bet'
 export default class BetsController {
   public async index({ response }: HttpContextContract) {
     const Bets = await Bet.all();
-    return response.status(200).send({ allBets: Bets })
+    return response.status(200).json({ allBets: Bets })
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -47,7 +47,7 @@ export default class BetsController {
           return response.status(400)
         }
       })
-      return response.status(201).send({ user: user, total_price: cumulative_betPrice, bets: user_bets })
+      return response.status(201).json({ user: user, total_price: cumulative_betPrice, bets: user_bets })
     }
     else {
       return response.badRequest({
@@ -62,7 +62,7 @@ export default class BetsController {
     const bets = await Bet
       .query()
       .where('user_id', user.id)
-    return response.status(200).send({ userBets: bets })
+    return response.status(200).json({ userBets: bets })
   }
 
   public async update({ request, response }: HttpContextContract) {
@@ -75,13 +75,13 @@ export default class BetsController {
     const { bet_numbers } = request.body();
     const bet = await Bet.findByOrFail('id', id)
     await bet.merge({ bet_numbers: bet_numbers }).save()
-    return response.status(200).send({ bet })
+    return response.status(200).json({ bet })
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = request.params();
     const bet = await Bet.findByOrFail('id', id)
     await bet.delete()
-    return response.status(200).send(`Aposta com id ${id} deletada`)
+    return response.status(200).json({ deleted_bet: bet })
   }
 }

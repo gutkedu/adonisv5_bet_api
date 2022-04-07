@@ -10,7 +10,7 @@ export default class UserRolesController {
     const user = await User.findOrFail(user_id)
     const role = await Role.findByOrFail('privilege', privilege)
     await user.related('roles').attach([role.id])
-    return response.status(200).send('OK')
+    return response.status(201).json({ user, role })
   }
 
   public async destroy({ request, response }: HttpContextContract) {
@@ -19,6 +19,6 @@ export default class UserRolesController {
     const user = await User.findOrFail(user_id)
     const role = await Role.findByOrFail('privilege', privilege)
     await user.related('roles').detach([role.id])
-    return response.status(200).send('OK')
+    return response.status(204)
   }
 }

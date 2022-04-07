@@ -5,7 +5,7 @@ import CreateGameValidator from 'App/Validators/CreateGameValidator'
 export default class GamesController {
   public async index({ response }: HttpContextContract) {
     const games = await Game.all()
-    return  response.status(200).send({ min_cart_value: 30, games })
+    return response.status(200).json({ min_cart_value: 30, games })
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -20,13 +20,13 @@ export default class GamesController {
       color: color,
     }
     const game = await Game.firstOrCreate(searchPayload, savePayload)
-    return response.status(201).send(`Jogo ${game.type} criado!`)
+    return response.status(201).json(game)
   }
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
     const games = await Game.findOrFail(id)
-    return response.status(200).send(games)
+    return response.status(200).json(games)
   }
 
   public async update({ request, response }: HttpContextContract) {
@@ -44,13 +44,13 @@ export default class GamesController {
         color: color,
       })
       .save()
-    return response.status(200).send(games)
+    return response.status(200).json(games)
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const games = await Game.findOrFail(id)
-    await games.delete()
-    return response.status(200).send(`Usuario com id: ${id} deletado!`)
+    const game = await Game.findOrFail(id)
+    await game.delete()
+    return response.status(200).json({ deleted_game: game })
   }
 }

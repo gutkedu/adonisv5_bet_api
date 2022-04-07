@@ -14,7 +14,7 @@ export default class AuthController {
         expiresIn: Env.get('NODE_ENV') === "development" ? '' : '1day',
         name: user?.serialize().email,
       })
-      return response.status(200).send({ token })
+      return response.status(200).json({ token })
     } catch {
       return response.badRequest('Invalid credentials')
     }
