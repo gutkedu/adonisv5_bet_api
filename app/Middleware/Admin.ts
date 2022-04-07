@@ -8,8 +8,8 @@ export default class Admin {
     try {
       const user = await User.findByOrFail('id', logged_user.id)
       const user_roles = await user.related('roles').query()
-      user_roles.forEach((item) => {
-        if (item.privilege === ('Admin' || 'admin')) {
+      user_roles.forEach((role) => {
+        if (role.privilege === ('Admin' || 'admin')) {
           isAdmin = true
         }
       })
