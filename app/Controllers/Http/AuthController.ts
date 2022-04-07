@@ -8,12 +8,12 @@ export default class AuthController {
     await request.validate(AuthUserValidator)
     const email = request.input('email')
     const password = request.input('password')
-    let isAdmin: boolean = false;
+    let isAdmin: boolean = false
     try {
       const user = await User.findByOrFail('email', email)
       const user_roles = await user.related('roles').query()
       const token = await auth.use('api').attempt(email, password, {
-        expiresIn: Env.get('NODE_ENV') === "development" ? '' : '1day',
+        expiresIn: Env.get('NODE_ENV') === 'development' ? '' : '1day',
         name: user?.serialize().email,
       })
       for (const role of user_roles) {

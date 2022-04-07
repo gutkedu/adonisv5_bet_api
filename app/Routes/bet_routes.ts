@@ -8,7 +8,6 @@ Route.group(() => {
       show: ['auth', 'admin'],
       index: ['auth', 'admin'],
       destroy: ['auth', 'admin'],
-      update: ['auth', 'admin']
+      update: ['auth', 'admin'],
     })
 })
-
