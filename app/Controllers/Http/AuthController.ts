@@ -8,7 +8,7 @@ export default class AuthController {
     await request.validate(AuthUserValidator)
     const email = request.input('email')
     const password = request.input('password')
-    let isAdmin: boolean = false
+    let role_arr: any = []
     try {
       const user = await User.findByOrFail('email', email)
       const user_roles = await user.related('roles').query()
@@ -17,12 +17,11 @@ export default class AuthController {
         name: user?.serialize().email,
       })
       for (const role of user_roles) {
-        if (role.privilege === ('Admin' || 'admin')) {
-          isAdmin = true
-        }
+        role_arr.push(role)
       }
-      return response.status(200).json({ token, user, isAdmin })
-    } catch {
+      return response.status(200).json({ token: token.token, user, user_role: role_arr })
+    }
+    catch {
       return response.badRequest('Invalid credentials')
     }
   }
