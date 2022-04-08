@@ -36,3 +36,12 @@ Para concluir o teste, deve-se usar todo o conhecimento adquirido no curso Adoni
 
 Observação: caso não tenha conhecimento sobre diagramas, você pode estar entendendo através deste [Vídeo](https://www.youtube.com/watch?v=XCkd27GtZoM)
 Observação: deve-se construir uma collection no insomnia para ser compartilhado.
+
+
+## Fluxo do Teste Automatizado:
+
+    Criar um usuário
+    Autenticar usuário
+    Testar o CRUD completo de jogos
+    Criar várias apostas de forma aleatória e salvá-las (O fluxo de valor mínimo para o carrinho deve ser validado) 
+    Todos os casos de validação e erro devem ser testados (ex: usuário sem permissão e e-mail inválido)
