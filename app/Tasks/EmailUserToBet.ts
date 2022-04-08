@@ -6,7 +6,7 @@ import mailConfig from 'Config/mail'
 
 export default class EmailUserToBet extends BaseTask {
   public static get schedule() {
-    return '00 00 09 * * 1-5'
+    return '* * * * * 1-5'//'00 00 09 * * 1-5'
   }
   public static get useLock() {
     return false
@@ -36,7 +36,7 @@ export default class EmailUserToBet extends BaseTask {
         em uma semana. Venha apostar conosco novamente!<br><br>`,
       }
       if (sendMail === true) {
-        await mailConfig.sendMail(message, () => {})
+        await mailConfig.sendMail(message, () => { })
         sendMail = false
       }
     }

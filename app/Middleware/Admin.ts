@@ -14,9 +14,9 @@ export default class Admin {
         }
       })
     } catch (error) {
-      return response.badRequest({ error: 'Invalid role credentials' })
+      return response.status(401).send({ error: 'Invalid role credentials' })
     }
     if (isAdmin === true) await next()
-    else return response.badRequest({ error: 'Invalid role credentials' })
+    else return response.status(401).send({ error: 'Invalid role credentials' })
   }
 }
