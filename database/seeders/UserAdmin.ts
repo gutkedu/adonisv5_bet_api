@@ -9,7 +9,9 @@ export default class UserAdminSeeder extends BaseSeeder {
       email: 'admin@adonisjs.com',
       password: 'admin',
     })
-    const role = await Role.findByOrFail('privilege', 'Admin')
-    await user.related('roles').attach([role.id])
+    const role_admin = await Role.findByOrFail('privilege', 'Admin')
+    await user.related('roles').attach([role_admin.id])
+    const role_player = await Role.findByOrFail('privilege', 'Player')
+    await user.related('roles').attach([role_player.id])
   }
 }
