@@ -22,8 +22,12 @@ export default class RolesController {
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const roles = await Role.findOrFail(id)
-    return response.status(200).json(roles)
+    try {
+      const roles = await Role.findOrFail(id)
+      return response.status(200).json(roles)
+    } catch {
+      return response.badRequest({ error: 'Invalid role id' })
+    }
   }
 
   public async update({ request, response }: HttpContextContract) {
@@ -34,19 +38,27 @@ export default class RolesController {
       }),
     })
     const { description } = request.body()
-    const roles = await Role.findOrFail(id)
-    await roles
-      .merge({
-        description: description,
-      })
-      .save()
-    return response.status(200).json(roles)
+    try {
+      const roles = await Role.findOrFail(id)
+      await roles
+        .merge({
+          description: description,
+        })
+        .save()
+      return response.status(200).json(roles)
+    } catch {
+      return response.badRequest({ error: 'Invalid role id' })
+    }
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const role = await Role.findOrFail(id)
-    await role.delete()
-    return response.status(200).json({ deleted_role: role })
+    try {
+      const role = await Role.findOrFail(id)
+      await role.delete()
+      return response.status(200).json({ deleted_role: role })
+    } catch {
+      return response.badRequest({ error: 'Invalid role id' })
+    }
   }
 }

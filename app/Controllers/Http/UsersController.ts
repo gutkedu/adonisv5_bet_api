@@ -44,43 +44,55 @@ export default class UsersController {
       })
       return response.status(201).json(new_user)
     } else {
-      return response.status(409).json({ message: `Usuario com e-mail ${user.email} ja existe` })
+      return response.status(409).json({ message: `User with ${user.email} already exist` })
     }
   }
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
     const currentDate = new Date()
-    let lastMonthBets: any = []
-    const lastMonth = currentDate.getMonth()
-    const user = await User.findByOrFail('id', id)
-    const bets = await Bet.query().where('user_id', user.id)
-    bets.forEach((item) => {
-      if (item.createdAt.month === lastMonth) {
-        lastMonthBets.push(item)
-      } else return
-    })
-    return response.status(200).json({ user, lastMonthBets })
+    let currentMonthBets: any = []
+    const lastMonth = currentDate.getMonth() + 1
+    try {
+      const user = await User.findOrFail(id)
+      const bets = await Bet.query().where('user_id', user.id)
+      bets.forEach((item) => {
+        if (item.createdAt.month === lastMonth) {
+          currentMonthBets.push(item)
+        } else return
+      })
+      return response.status(200).json({ user, currentMonthBets })
+    } catch {
+      return response.badRequest({ error: 'Invalid user_id' })
+    }
   }
 
   public async update({ request, response }: HttpContextContract) {
     await request.validate(UpdateUserValidator)
     const { id } = request.params()
     const { name, email } = request.body()
-    const user = await User.findOrFail(id)
-    await user
-      .merge({
-        name: name,
-        email: email,
-      })
-      .save()
-    return response.status(200).json(user)
+    try {
+      const user = await User.findOrFail(id)
+      await user
+        .merge({
+          name: name,
+          email: email,
+        })
+        .save()
+      return response.status(200).json(user)
+    } catch {
+      return response.badRequest({ error: 'Invalid user id' })
+    }
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const user = await User.findByOrFail('id', id)
-    await user.delete()
-    return response.status(200).json({ deleted_user: user })
+    try {
+      const user = await User.findByOrFail('id', id)
+      await user.delete()
+      return response.status(200).json({ deleted_user: user })
+    } catch {
+      return response.badRequest({ error: 'Invalid user id' })
+    }
   }
 }

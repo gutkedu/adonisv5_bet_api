@@ -25,32 +25,44 @@ export default class GamesController {
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const games = await Game.findOrFail(id)
-    return response.status(200).json(games)
+    try {
+      const games = await Game.findOrFail(id)
+      return response.status(200).json(games)
+    } catch {
+      return response.badRequest({ error: 'Invalid game id' })
+    }
   }
 
   public async update({ request, response }: HttpContextContract) {
     const { id } = request.params()
     await request.validate(CreateGameValidator)
     const { type, description, range, price, max_number, color } = request.body()
-    const games = await Game.findOrFail(id)
-    await games
-      .merge({
-        type: type,
-        description: description,
-        range: range,
-        price: price,
-        max_number: max_number,
-        color: color,
-      })
-      .save()
-    return response.status(200).json(games)
+    try {
+      const games = await Game.findOrFail(id)
+      await games
+        .merge({
+          type: type,
+          description: description,
+          range: range,
+          price: price,
+          max_number: max_number,
+          color: color,
+        })
+        .save()
+      return response.status(200).json(games)
+    } catch (error) {
+      return response.badRequest({ error: 'Invalid game id' })
+    }
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = request.params()
-    const game = await Game.findOrFail(id)
-    await game.delete()
-    return response.status(200).json({ deleted_game: game })
+    try {
+      const game = await Game.findOrFail(id)
+      await game.delete()
+      return response.status(200).json({ deleted_game: game })
+    } catch {
+      return response.badRequest({ error: 'Invalid game id' })
+    }
   }
 }
