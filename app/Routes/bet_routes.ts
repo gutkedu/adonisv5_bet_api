@@ -5,8 +5,9 @@ Route.group(() => {
     .apiOnly()
     .middleware({
       store: ['auth'],
+      show: ['auth', 'admin'],
+      index: ['auth', 'admin'],
       destroy: ['auth', 'admin'],
-      update: ['auth', 'admin']
+      update: ['auth', 'admin'],
     })
 })
-

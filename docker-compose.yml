@@ -2,7 +2,8 @@ version: '3.9'
 
 services:
   database:
-    image: mysql:5.7
+    build:
+      context: ./docker/db
     container_name: bet_api-mysql
     restart: always
     ports:
@@ -12,9 +13,13 @@ services:
       - MYSQL_DATABASE=bet_api-mysql
     volumes:
       - mysqldata:/data/mysql
+    networks:
+      - app-network
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
     container_name: bet_api
     restart: always
     ports:
@@ -24,8 +29,14 @@ services:
       - .:/usr/app
     links:
       - database
+    networks:
+      - app-network
     depends_on:
       - database
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mysqldata:

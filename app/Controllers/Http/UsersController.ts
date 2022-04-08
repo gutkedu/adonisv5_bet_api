@@ -4,11 +4,12 @@ import User from 'App/Models/User'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 import Bet from 'App/Models/Bet'
+import Role from 'App/Models/Role'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
     const user = await User.all()
-    return response.status(200).send(user)
+    return response.status(200).json(user)
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -22,6 +23,9 @@ export default class UsersController {
         email: email,
         password: password,
       })
+
+      const role = await Role.findByOrFail('privilege', 'Player')
+      await new_user.related('roles').attach([role.id])
 
       const message = {
         from: 'noreplay@luby.software.com',
@@ -38,32 +42,31 @@ export default class UsersController {
           return response.status(400)
         }
       })
-      return response.status(201).send(`Usuario com e-mail ${new_user.email} criado!`)
+      return response.status(201).json(new_user)
     } else {
-      return response.status(200).send(`Usuario com e-mail ${user.email} ja existe`)
+      return response.status(409).json({ message: `Usuario com e-mail ${user.email} ja existe` })
     }
   }
 
   public async show({ request, response }: HttpContextContract) {
     const { id } = request.params()
     const currentDate = new Date()
-    let lastMonthBets: any = [];
-    const lastMonth = currentDate.getMonth();
+    let lastMonthBets: any = []
+    const lastMonth = currentDate.getMonth()
     const user = await User.findByOrFail('id', id)
     const bets = await Bet.query().where('user_id', user.id)
     bets.forEach((item) => {
       if (item.createdAt.month === lastMonth) {
-        lastMonthBets.push(item);
-      }
-      else
-        return;
+        lastMonthBets.push(item)
+      } else return
     })
-    return response.status(200).send({ user, lastMonthBets })
+    return response.status(200).json({ user, lastMonthBets })
   }
 
   public async update({ request, response }: HttpContextContract) {
     await request.validate(UpdateUserValidator)
-    const { id, name, email } = request.body()
+    const { id } = request.params()
+    const { name, email } = request.body()
     const user = await User.findOrFail(id)
     await user
       .merge({
@@ -71,13 +74,13 @@ export default class UsersController {
         email: email,
       })
       .save()
-    return response.status(200).send(user)
+    return response.status(200).json(user)
   }
 
   public async destroy({ request, response }: HttpContextContract) {
-    const { user_id } = request.body()
-    const user = await User.findByOrFail('id', user_id)
+    const { id } = request.params()
+    const user = await User.findByOrFail('id', id)
     await user.delete()
-    return response.status(202).send(user)
+    return response.status(200).json({ deleted_user: user })
   }
 }

@@ -15,6 +15,6 @@ export default class ResetPasswordController {
     user.password = password
     user.remember_me_token = null
     await user.save()
-    response.status(200).send('Senha alterada')
+    response.status(204)
   }
 }

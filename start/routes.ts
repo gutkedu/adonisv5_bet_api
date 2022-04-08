@@ -9,4 +9,3 @@ import 'App/Routes/userHandle_routes'
 Route.get('/', async () => {
   return { hello: 'World from Docker' }
 })
-
