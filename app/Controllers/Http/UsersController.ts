@@ -25,6 +25,7 @@ export default class UsersController {
       })
 
       const role = await Role.findByOrFail('privilege', 'Player')
+      if (!role) return response.status(400).send({ error: 'Invalid role id' })
       await new_user.related('roles').attach([role.id])
 
       const message = {
@@ -42,7 +43,7 @@ export default class UsersController {
           return response.status(400)
         }
       })
-      return response.status(201).json(new_user)
+      return response.status(201).json({ user: new_user })
     } else {
       return response.status(409).json({ message: `User with ${user.email} already exist` })
     }
