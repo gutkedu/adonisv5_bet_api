@@ -20,10 +20,7 @@ export default class EmailUserToBet extends BaseTask {
     for (const user of users) {
       const user_bets = await Bet.query().where('user_id', user.id)
       for (const bet of user_bets) {
-        let bet_date: any = new Date(
-          bet.createdAt.year,
-          bet.createdAt.month - 1,
-          bet.createdAt.day)
+        let bet_date: any = new Date(bet.createdAt.year, bet.createdAt.month - 1, bet.createdAt.day)
         const betWeekAndDays = getWeekAndDays(bet_date)
         if (betWeekAndDays.numberOfDays < ActualWeekAndDays.numberOfDays - 7) {
           sendMail = true
@@ -39,7 +36,7 @@ export default class EmailUserToBet extends BaseTask {
         em uma semana. Venha apostar conosco novamente!<br><br>`,
       }
       if (sendMail === true) {
-        await mailConfig.sendMail(message, () => { })
+        await mailConfig.sendMail(message, () => {})
         this.logger.info(`Sent email to ${user.id}`)
         sendMail = false
       }

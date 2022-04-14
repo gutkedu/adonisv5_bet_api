@@ -16,18 +16,17 @@ test.group('Create a new user test', () => {
   })
 
   test('create a new user using http call', async (assert) => {
-
     interface userDTO {
       user: {
-        name: string,
-        email: string,
+        name: string
+        email: string
         id: string
       }
     }
     const create_user_body = {
-      "name": "Novo usuario",
-      "email": "new@adonisjs.com",
-      "password": "123456"
+      name: 'Novo usuario',
+      email: 'new@adonisjs.com',
+      password: '123456',
     }
 
     const response = await request.post('/users').send(create_user_body)
@@ -40,4 +39,3 @@ test.group('Create a new user test', () => {
     assert.deepEqual(body.user.email, create_user_body.email)
   })
 })
-

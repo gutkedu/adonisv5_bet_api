@@ -50,9 +50,7 @@ export default class BetsController {
           return response.status(400)
         }
       })
-      return response
-        .status(201)
-        .json({ user, total_price: cumulative_betPrice, bets: user_bets })
+      return response.status(201).json({ user, total_price: cumulative_betPrice, bets: user_bets })
     } else {
       return response.badRequest({
         error: `O valor total da aposta foi de R$${cumulative_betPrice}, menor que o minimo de R$${min_cart_value}.`,
