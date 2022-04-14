@@ -11,33 +11,30 @@ test.group('Create a new user test', () => {
     user.email = 'virk@adonisjs.com'
     user.password = 'secret'
     await user.save()
-    const user_created = await User.findByOrFail('email', user.email)
-    assert.exists(user_created)
+    const userCreated = await User.findByOrFail('email', user.email)
+    assert.exists(userCreated)
   })
 
   test('create a new user using http call', async (assert) => {
-
-    interface userDTO {
+    interface UserDTO {
       user: {
-        name: string,
-        email: string,
+        name: string
+        email: string
         id: string
       }
     }
-    const create_user_body = {
-      "name": "Novo usuario",
-      "email": "new@adonisjs.com",
-      "password": "123456"
+    const createUserBody = {
+      name: 'Novo usuario',
+      email: 'new@adonisjs.com',
+      password: '123456',
     }
-
-    const response = await request.post('/users').send(create_user_body)
-    const body: userDTO = response.body
+    const response = await request.post('/users').send(createUserBody)
+    const body: UserDTO = response.body
     const status = response.status
 
     assert.equal(status, 201)
     assert.exists(body.user.id)
-    assert.deepEqual(body.user.name, create_user_body.name)
-    assert.deepEqual(body.user.email, create_user_body.email)
+    assert.deepEqual(body.user.name, createUserBody.name)
+    assert.deepEqual(body.user.email, createUserBody.email)
   })
 })
-

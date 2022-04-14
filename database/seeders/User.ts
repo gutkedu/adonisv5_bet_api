@@ -13,5 +13,3 @@ export default class UserSeeder extends BaseSeeder {
     await user.related('roles').attach([role.id])
   }
 }
-
-

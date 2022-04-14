@@ -20,8 +20,7 @@ export default class AuthController {
         role_arr.push(role)
       }
       return response.status(200).json({ token: token.token, user, user_role: role_arr })
-    }
-    catch {
+    } catch {
       return response.badRequest('Invalid credentials')
     }
   }

@@ -30,15 +30,16 @@ API para armazenar apostas e jogos de sorte.
 
      RF08: Ao buscar um usuário, é necessário trazer todas as apostas dele no último mês
 
+# Atenção: Antes de iniciar a prova, envie o DIAGRAMA DE BANCO DE DADOS para o seu líder.
 
-## Teste Automatizado:
+Observação: caso não tenha conhecimento sobre diagramas, você pode estar entendendo através deste [Vídeo](https://www.youtube.com/watch?v=XCkd27GtZoM)
+Observação: deve-se construir uma collection no insomnia para ser compartilhado.
+
+## Fluxo do Teste Automatizado:
 
     Criar um usuário
     Autenticar usuário
     Testar o CRUD completo de jogos
-    Criar várias apostas de forma aleatória e salvá-las (O fluxo de valor mínimo para o carrinho deve ser validado) 
+    Criar várias apostas de forma aleatória e salvá-las (O fluxo de valor mínimo para o carrinho deve ser validado)
     Todos os casos de validação e erro devem ser testados (ex: usuário sem permissão e e-mail inválido)
-
-
-
 
