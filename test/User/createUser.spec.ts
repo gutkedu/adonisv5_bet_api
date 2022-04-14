@@ -1,8 +1,8 @@
 import test from 'japa'
 import User from 'App/Models/User'
 import supertest from 'supertest'
-
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+const request = supertest(BASE_URL)
 
 test.group('Create a new user test', () => {
   test('ensure a new user is created', async (assert) => {
@@ -16,16 +16,28 @@ test.group('Create a new user test', () => {
   })
 
   test('create a new user using http call', async (assert) => {
-    const createUser = await supertest(BASE_URL)
-      .post('/users')
-      .send({
-        "name": "User Teste",
-        "email": "user@teste.com",
-        "password": "secret"
-      })
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(201)
+
+    interface userDTO {
+      user: {
+        name: string,
+        email: string,
+        id: string
+      }
+    }
+    const create_user_body = {
+      "name": "Novo usuario",
+      "email": "new@adonisjs.com",
+      "password": "123456"
+    }
+
+    const response = await request.post('/users').send(create_user_body)
+    const body: userDTO = response.body
+    const status = response.status
+
+    assert.equal(status, 201)
+    assert.exists(body.user.id)
+    assert.deepEqual(body.user.name, create_user_body.name)
+    assert.deepEqual(body.user.email, create_user_body.email)
   })
 })
 
