@@ -19,7 +19,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./docker/api/Dockerfile
+      dockerfile: ../lotery/docker/api/Dockerfile
     container_name: bet_api
     restart: always
     ports:
