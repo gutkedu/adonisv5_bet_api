@@ -1,4 +1,4 @@
-import Game from 'App/Models/Game'
+import Game from '../../app/Models/Game'
 import test from 'japa'
 import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`

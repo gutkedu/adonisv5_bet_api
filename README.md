@@ -29,12 +29,6 @@ API para armazenar apostas e jogos de sorte.
      RF07. Criar uma scheduler para rodar todos os dias ás 09:00, disparando e-mails apenas para os players que não apostaram no prazo de 1 semana anterior ao dia atual convidando eles para fazer uma aposta.
 
      RF08: Ao buscar um usuário, é necessário trazer todas as apostas dele no último mês
-
-# Atenção: Antes de iniciar a prova, envie o DIAGRAMA DE BANCO DE DADOS para o seu líder.
-
-Observação: caso não tenha conhecimento sobre diagramas, você pode estar entendendo através deste [Vídeo](https://www.youtube.com/watch?v=XCkd27GtZoM)
-Observação: deve-se construir uma collection no insomnia para ser compartilhado.
-
 ## Fluxo do Teste Automatizado:
 
     Criar um usuário
