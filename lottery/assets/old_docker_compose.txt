@@ -15,7 +15,25 @@ services:
       - mysqldata:/data/mysql
     networks:
       - app-network
-      
+
+  app:
+    build:
+      context: .
+      dockerfile: ./lottery/docker/api/Dockerfile
+    container_name: bet_api
+    restart: always
+    ports:
+      - 3333:3333
+      - 9229:9229 #debug
+    volumes:
+      - ./:/usr/app
+    links:
+      - database
+    networks:
+      - app-network
+    depends_on:
+      - database
+
 networks:
   app-network:
     driver: bridge
