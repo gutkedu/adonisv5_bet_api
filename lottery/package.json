@@ -37,6 +37,7 @@
     "@adonisjs/repl": "^3.1.9",
     "adonis5-scheduler": "^2.0.2",
     "argon2": "^0.28.5",
+    "kafkajs": "^2.0.2",
     "luxon": "^2.3.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.7.3",

@@ -14,13 +14,19 @@
     "Database": "database",
     "Contracts": "contracts"
   },
-  "preloads": ["./start/routes", "./start/kernel"],
+  "preloads": [
+    "./start/routes",
+    "./start/kernel"
+  ],
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
     "@adonisjs/lucid",
     "@adonisjs/auth",
-    "adonis5-scheduler"
+    "adonis5-scheduler",
+    "./providers/KafkaProvider"
   ],
-  "aceProviders": ["@adonisjs/repl"]
+  "aceProviders": [
+    "@adonisjs/repl"
+  ]
 }
