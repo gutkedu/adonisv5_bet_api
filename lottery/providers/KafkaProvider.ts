@@ -1,5 +1,4 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-const { Kafka, logLevel } = require('kafkajs')
 
 export default class KafkaProvider {
   constructor(protected app: ApplicationContract) {}
@@ -12,25 +11,7 @@ export default class KafkaProvider {
     // All bindings are ready, feel free to use them
   }
 
-  public async ready() {
-    const kafka = new Kafka({
-      clientId: 'my-app',
-      brokers: ['localhost:29092'],
-      logLevel: logLevel.WARN,
-      retry: {
-        initialRetryTime: 300,
-        retries: 10,
-      },
-    })
-    console.log('Kafka Connected')
-    const producer = kafka.producer()
-    await producer.connect()
-    await producer.send({
-      topic: 'emails-topic',
-      messages: [{ value: 'Hello KafkaJS user!' }],
-    })
-    await producer.disconnect()
-  }
+  public async ready() {}
 
   public async shutdown() {
     // Cleanup, since app is going down

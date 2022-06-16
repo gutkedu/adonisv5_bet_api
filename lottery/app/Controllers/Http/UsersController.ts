@@ -5,6 +5,7 @@ import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
 import Bet from 'App/Models/Bet'
 import Role from 'App/Models/Role'
+import kafkaConfig from 'Config/kafka'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
@@ -17,35 +18,40 @@ export default class UsersController {
     const { name, email, password } = request.body()
     const user = await User.findBy('email', email)
 
-    if (!user) {
-      const new_user = await User.create({
-        name: name,
-        email: email,
-        password: password,
-      })
+    try {
+      const role = await Role.findBy('privilege', 'Player')
 
-      const role = await Role.findByOrFail('privilege', 'Player')
-      if (!role) return response.status(400).send({ error: 'Invalid role id' })
-      await new_user.related('roles').attach([role.id])
-
-      const message = {
-        from: 'noreplay@luby.software.com',
-        to: `${new_user.email}`,
-        subject: 'Cadastro finalizado na plataforma de apostas.',
-        text: `Prezado(a) ${new_user.name}. \n\nO seu cadastro foi
-        finalizado.\n\n`,
-        html: `Prezado(a) ${new_user.name}. <br><br> O seu cadastro foi
-        finalizado. <br><br>`,
+      if (!role) {
+        return response.status(400).send({ error: 'Invalid role id' })
       }
 
-      await mailConfig.sendMail(message, (err) => {
-        if (err) {
-          return response.status(400)
-        }
-      })
-      return response.status(201).json({ user: new_user })
-    } else {
-      return response.status(409).json({ message: `User with ${user.email} already exist` })
+      if (!user) {
+        const new_user = await User.create({
+          name: name,
+          email: email,
+          password: password,
+        })
+
+        await new_user.related('roles').attach([role.id])
+
+        const producer = kafkaConfig.producer()
+        await producer.connect()
+        await producer.send({
+          topic: 'emails-newUser',
+          messages: [
+            {
+              value: JSON.stringify(new_user),
+            },
+          ],
+        })
+        await producer.disconnect()
+
+        return response.status(201).json({ user: new_user })
+      } else {
+        return response.status(409).json({ message: `User with ${user.email} already exist` })
+      }
+    } catch {
+      return response.badRequest({ error: 'Error creating user' })
     }
   }
 
