@@ -1,10 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateBetValidator from 'App/Validators/CreateBetValidator'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import mailConfig from 'Config/mail'
 import User from '../../Models/User'
 import Game from '../../Models/Game'
 import Bet from '../../Models/Bet'
+import kafkaConfig from 'Config/kafka'
 
 export default class BetsController {
   public async index({ response }: HttpContextContract) {
@@ -12,11 +12,13 @@ export default class BetsController {
     return response.status(200).json({ allBets: Bets })
   }
 
-  public async store({ request, response }: HttpContextContract) {
+  public async store({ request, response, auth }: HttpContextContract) {
     await request.validate(CreateBetValidator)
-    const { user_id, min_cart_value, user_bets } = request.body()
+    const { min_cart_value, user_bets } = request.body()
+    const logged_user: any = auth.user
+    console.log(logged_user.id)
     let cumulative_betPrice: number = 0
-    const user = await User.find(user_id)
+    const user = await User.find(logged_user.id)
     if (!user) return response.status(400).send({ error: 'Invalid user id' })
 
     for (const bet of user_bets) {
@@ -36,20 +38,22 @@ export default class BetsController {
         })
       }
 
-      const message = {
-        from: 'noreplay@luby.software.com',
-        to: `${user.email}`,
-        subject: 'Aposta relizada na Bet API.',
-        text: `Prezado(a) ${user.name}. \n\nA sua aposta foi finalizada,
-          confira no site para informações mais detalhadas. \n\n`,
-        html: `Prezado(a) ${user.name}. <br><br> A sua aposta foi finalizada,
-          confira no site para informações mais detalhadas. <br><br>`,
-      }
-      await mailConfig.sendMail(message, (err) => {
-        if (err) {
-          return response.status(400)
-        }
+      const newBetProducer = kafkaConfig.producer()
+      await newBetProducer.connect()
+
+      await newBetProducer.send({
+        topic: 'emails-newBet',
+        messages: [
+          {
+            value: JSON.stringify({
+              name: user.name,
+              email: user.email,
+            }),
+          },
+        ],
       })
+      await newBetProducer.disconnect()
+
       return response.status(201).json({ user, total_price: cumulative_betPrice, bets: user_bets })
     } else {
       return response.badRequest({

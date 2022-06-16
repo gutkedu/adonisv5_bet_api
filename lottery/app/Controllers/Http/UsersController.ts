@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import mailConfig from 'Config/mail'
 import User from 'App/Models/User'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import UpdateUserValidator from 'App/Validators/UpdateUserValidator'
@@ -34,17 +33,21 @@ export default class UsersController {
 
         await new_user.related('roles').attach([role.id])
 
-        const producer = kafkaConfig.producer()
-        await producer.connect()
-        await producer.send({
+        const newUserProducer = kafkaConfig.producer()
+        await newUserProducer.connect()
+
+        await newUserProducer.send({
           topic: 'emails-newUser',
           messages: [
             {
-              value: JSON.stringify(new_user),
+              value: JSON.stringify({
+                name: new_user.name,
+                email: new_user.email,
+              }),
             },
           ],
         })
-        await producer.disconnect()
+        await newUserProducer.disconnect()
 
         return response.status(201).json({ user: new_user })
       } else {

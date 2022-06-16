@@ -5,7 +5,6 @@ export default class CreateBetValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    user_id: schema.string({}, [rules.uuid()]),
     min_cart_value: schema.number([rules.unsigned()]),
     user_bets: schema.array().members(
       schema.object().members({

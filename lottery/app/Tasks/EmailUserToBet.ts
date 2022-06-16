@@ -2,7 +2,7 @@ import { BaseTask } from 'adonis5-scheduler/build'
 import User from '../Models/User'
 import getWeekAndDays from '../../utils/getWeek'
 import Bet from '../Models/Bet'
-import mailConfig from 'Config/mail'
+import kafkaConfig from 'Config/kafka'
 
 export default class EmailUserToBet extends BaseTask {
   public static get schedule() {
@@ -26,17 +26,23 @@ export default class EmailUserToBet extends BaseTask {
           sendMail = true
         }
       }
-      const message = {
-        from: 'noreplay@luby.software.com',
-        to: `${user.email}`,
-        subject: 'Realize sua aposta na Bet Api',
-        text: `Prezado(a) ${user.name}. \n\n Você não ordenou nenhuma aposta
-        em uma semana. Venha apostar conosco novamente!\n\n`,
-        html: `Prezado(a) ${user.name}. <br><br> Você não ordenou nenhuma aposta
-        em uma semana. Venha apostar conosco novamente!<br><br>`,
-      }
+
       if (sendMail === true) {
-        await mailConfig.sendMail(message, () => {})
+        const newEmailUserToBetProducer = kafkaConfig.producer()
+        await newEmailUserToBetProducer.connect()
+        await newEmailUserToBetProducer.send({
+          topic: 'emails-emailUserToBet',
+          messages: [
+            {
+              value: JSON.stringify({
+                name: user.name,
+                email: user.email,
+              }),
+            },
+          ],
+        })
+        await newEmailUserToBetProducer.disconnect()
+
         this.logger.info(`Sent email to ${user.id}`)
         sendMail = false
       }
