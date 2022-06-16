@@ -1,23 +1,17 @@
-import { Kafka, logLevel } from "kafkajs";
-import { mailConfig } from "./mailProvider/mailConfig.js";
-
-const kafka = new Kafka({
-  clientId: "my-app",
-  brokers: ["localhost:29092"],
-  logLevel: logLevel.WARN,
-  retry: {
-    initialRetryTime: 300,
-    retries: 10,
-  },
-});
+import { kafkaConfig } from "./providers/kafkajs/kafkaConfig.js";
+import { mailConfig } from "./providers/nodemailer/mailConfig.js";
 
 async function run() {
-  const newUserConsumer = kafka.consumer({ groupId: "emails-newUserGroup" });
-  const forgotPasswordConsumer = kafka.consumer({
+  const newUserConsumer = kafkaConfig.consumer({
+    groupId: "emails-newUserGroup",
+  });
+  const forgotPasswordConsumer = kafkaConfig.consumer({
     groupId: "emails-forgotPasswordGroup",
   });
-  const newBetConsumer = kafka.consumer({ groupId: "emails-newBetGroup" });
-  const newEmailUserToBetConsumer = kafka.consumer({
+  const newBetConsumer = kafkaConfig.consumer({
+    groupId: "emails-newBetGroup",
+  });
+  const newEmailUserToBetConsumer = kafkaConfig.consumer({
     groupId: "emails-emailUserToBetGroup",
   });
 
